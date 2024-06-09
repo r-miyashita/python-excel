@@ -73,7 +73,8 @@ for idx, file in enumerate(input_files):
         with pd.ExcelWriter(
             output_file,
             engine='openpyxl',
-            mode='a', if_sheet_exists='replace'
+            mode='a',
+            if_sheet_exists='replace'
         ) as writer:
             df_trimmed.to_excel(writer, sheet_name=ws_list[idx])
 
