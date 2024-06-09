@@ -8,6 +8,7 @@
 import shutil
 import re
 import pandas as pd
+import urllib.parse as ul
 # from openpyxl import Workbook
 from pathlib import Path
 
@@ -48,13 +49,9 @@ csv >> excel書き出し(シート追記)
 def createSheetTitle(csvFile):
     replace_ptn = re.compile(r'(^.+/|\.csv$)')
     ws_title = re.sub(replace_ptn, '', str(csvFile))
-    return ws_title
+    ws_title_decoded = ul.unquote(ws_title, encoding='shift-jis')
+    return ws_title_decoded
 
-
-ws_list = []
-for idx, file in enumerate(input_files):
-    title = createSheetTitle(file)
-    ws_list.append(title)
 
 for idx, file in enumerate(input_files):
 
@@ -67,8 +64,11 @@ for idx, file in enumerate(input_files):
     df_trimmed = df.replace(
         r'(^[\'|\"]{1}[\s|\t]*|[\s|\t]*[\'|\"]{1}$)', '', regex=True)
 
+    # ファイル名をシート名にする
+    ws_title = createSheetTitle(file)
+
     if idx == 0:
-        df_trimmed.to_excel(output_file, sheet_name=ws_list[idx])
+        df_trimmed.to_excel(output_file, sheet_name=ws_title, index=False)
     else:
         with pd.ExcelWriter(
             output_file,
@@ -76,7 +76,7 @@ for idx, file in enumerate(input_files):
             mode='a',
             if_sheet_exists='replace'
         ) as writer:
-            df_trimmed.to_excel(writer, sheet_name=ws_list[idx])
+            df_trimmed.to_excel(writer, sheet_name=ws_title, index=False)
 
 '''------------------------------
 sql生成
