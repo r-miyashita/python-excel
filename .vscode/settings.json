@@ -1,0 +1,15 @@
+{
+  "js-beautify.formatting": false,
+  // Pylance の Type Checking のうち、いくつかのエラー報告を抑制する
+  "python.analysis.diagnosticSeverityOverrides": {
+    // "reportConstantRedefinition": "none",
+    // "reportMissingTypeStubs": "none",
+    // "reportPrivateImportUsage": "none",
+    "reportShadowedImports": "none"
+    // "reportUnnecessaryComparison": "none",
+    // "reportUnknownArgumentType": "none",
+    // "reportUnknownMemberType": "none",
+    // "reportUnknownVariableType": "none",
+    // "reportUnusedFunction": "none"
+  }
+}
