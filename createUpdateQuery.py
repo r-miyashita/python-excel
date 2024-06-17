@@ -165,15 +165,15 @@ for idx, ws in enumerate(ws_list):
         min_col=append_column_no,
         max_col=append_column_no
     ):
-        # query_head 切り戻し用の行はコメントアウトしておく()
+        # sql_head 切り戻し用の行はコメントアウトしておく()
         if count % 2 == 0:
-            query_head = f'="-- UPDATE {table} SET"'
+            sql_u_head = f'="-- UPDATE {table} SET"'
         else:
-            query_head = f'="UPDATE {table} SET"'
+            sql_u_head = f'="UPDATE {table} SET"'
         count += 1
 
-        query_body = ''
-        query_condition = '&"WHERE"&'
+        sql_u_body = ''
+        sql_u_condition = '&"WHERE"&'
         for cell in row:
             # query_body
             for idx, val in enumerate(dest_column_nums):
@@ -183,25 +183,48 @@ for idx, ws in enumerate(ws_list):
 
                 if idx == len(dest_column_nums) - 1:
                     if re.fullmatch('NULL', is_str_null, flags=re.IGNORECASE):
-                        query_body += f'&" `"&{column}&"` = "&{value}&" "'
+                        sql_u_body += f'&" `"&{column}&"` = "&{value}&" "'
                     else:
-                        query_body += f'&" `"&{column}&"` = \'"&{value}&"\' "'
+                        sql_u_body += f'&" `"&{column}&"` = \'"&{value}&"\' "'
                 else:
                     if re.fullmatch('NULL', is_str_null, flags=re.IGNORECASE):
-                        query_body += f'&" `"&{column}&"` = "&{value}&","'
+                        sql_u_body += f'&" `"&{column}&"` = "&{value}&","'
                     else:
-                        query_body += f'&" `"&{column}&"` = \'"&{value}&"\',"'
+                        sql_u_body += f'&" `"&{column}&"` = \'"&{value}&"\',"'
 
             # query_condition
             condition_column = ws.cell(row=start_row-1, column=1).coordinate
             condition_val = ws.cell(row=cell.row, column=1).coordinate
-            query_condition += f'" `"&{
+
+            sql_u_condition += f'" `"&{
                 condition_column}&"` = \'"&{condition_val}&"\';"'
 
             # cell.valueに埋め込み
-            cell.value = (query_head + query_body + query_condition)
+            cell.value = (sql_u_head + sql_u_body + sql_u_condition)
 
-        print(query_head + query_body + query_condition)
+    # 確認用 select句作成
+    s_condition_key = ws.cell(row=start_row-1, column=1).coordinate
+    s_condition_values = []
+    for i in range(start_row, ws.max_row, interval):
+        for row in ws.iter_rows(min_row=i, max_row=i, min_col=1, max_col=1):
+            for cell in row:
+                s_condition_values.append(cell.coordinate)
+
+    sql_s_head = f'= "SELECT * FROM `{table}` WHERE `"&{
+        s_condition_key}&"` IN("'
+    sql_s_body = ''
+    for idx, val in enumerate(s_condition_values):
+        if idx == len(s_condition_values)-1:
+            sql_s_body += f'&" \'"&{val}&"\' );"'
+        else:
+            sql_s_body += f'&" \'"&{val}&"\', "'
+
+    ws.cell(row=ws.max_row+2, column=1).value = '確認用クエリ'
+    ws.cell(row=ws.max_row+1, column=1).value = sql_s_head + sql_s_body
+
+    # ヘッダー行にフィルター設定
+    ws.auto_filter.ref = f'{ws.cell(row=start_row - 1, column=1).coordinate}:{
+        ws.cell(row=start_row - 1, column=ws.max_column - 1).coordinate}'
 
 wb.save(output_file)
 
