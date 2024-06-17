@@ -3,14 +3,16 @@
     csv転記(ファイル数に応じてシート追加)
     sql生成（excel式埋め込み）
 """
+# 外部ライブラリ
 import shutil
 import re
 import datetime as dt
 import pandas as pd
-import urllib.parse as ul
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill, Font
 from pathlib import Path
+# カスタム関数
+import functions as cf
 
 '''------------------------------
 前準備
@@ -54,13 +56,6 @@ csv >> excel書き出し(シート追記)
 ------------------------------'''
 
 
-def createSheetTitle(csvFile):
-    replace_ptn = re.compile(r'(^.+/|\.csv$)')
-    ws_title = re.sub(replace_ptn, '', str(csvFile))
-    ws_title_decoded = ul.unquote(ws_title, encoding='shift-jis')
-    return ws_title_decoded
-
-
 ws_list = []
 new_url_list = []
 iter_count = 1
@@ -88,7 +83,7 @@ for idx, file in enumerate(input_files):
             ascending=list(sortkey_dict.values()))
 
     # ファイル名をシート名にする
-    ws_title = createSheetTitle(file)
+    ws_title = re.sub('.csv', '', cf.getFileName(file))
     ws_list.append(ws_title)
 
     if idx == 0:
@@ -118,11 +113,12 @@ for idx, ws in enumerate(ws_list):
     dest_column_nums = [4, 5, 6, 7]
     src_row_nums = []
     src_column_vals = [
-        ul.unquote(re.sub('(^.+/)', '', str(new_url_list[idx]))),
+        cf.getFileName(new_url_list[idx]),
         new_url_list[idx],
         update_user,
         update_datetime
     ]
+
     new_row_color = PatternFill(fgColor='F5E7EE', fill_type='solid')
     emphasis_font_color = Font(color='FF0000')
 
@@ -227,20 +223,3 @@ for idx, ws in enumerate(ws_list):
         ws.cell(row=start_row - 1, column=ws.max_column - 1).coordinate}'
 
 wb.save(output_file)
-
-# 既存データ複製、新情報書き込み、SQl生成
-
-
-'''------------------------------
-sql生成
-------------------------------'''
-
-'''------------------------------
-samarry生成
-------------------------------'''
-
-'''------------------------------
-nullチェック
-------------------------------'''
-
-# wb.save(output_file)
