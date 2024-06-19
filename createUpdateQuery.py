@@ -58,7 +58,12 @@ csv >> excel書き出し(シート追記)
 
 ws_list = []
 new_url_list = []
-iter_count = 1
+
+# 6/18 追加（未置換） dest_column_numsと置き換える
+updt_columns_idx = [4, 5, 6, 7]  # paramで受け取る
+updt_columns = {}
+##
+
 for idx, file in enumerate(input_files):
 
     # 1行目から新URLを取得
@@ -71,10 +76,17 @@ for idx, file in enumerate(input_files):
     df_trimmed = df.replace(
         r'(^[\'|\"|\s]{1}[\s|\t]*|[\s|\t]*[\'|\"]{1}$)', '', regex=True)
 
+    # 6/18 追加
+    # 初回にデータフレームから更新対象列を取得する
+    if idx == 0:
+        for i in updt_columns_idx:
+            updt_columns[i] = list(df_trimmed)[i-1]
+    print(list(range(1, len(updt_columns) + 1)))
     # iter_count分データを複製する
     df_concat = []
     df_result = df_trimmed
     sortkey_dict = {'id': True}  # sortkey: isAscending(True or False)
+    iter_count = 1
     if iter_count:
         for i in range(iter_count+1):
             df_concat.append(df_trimmed)
@@ -110,34 +122,45 @@ for idx, ws in enumerate(ws_list):
         6: update_user
         7: update_datetime
     '''
-    dest_column_nums = [4, 5, 6, 7]
-    src_row_nums = []
-    src_column_vals = [
+    updt_src_vals = [
         cf.getFileName(new_url_list[idx]),
         new_url_list[idx],
         update_user,
         update_datetime
     ]
 
-    new_row_color = PatternFill(fgColor='F5E7EE', fill_type='solid')
+    updt_src_cells = []
+    for i in range(1, len(updt_columns) + 1):
+        updt_src_cells.append(ws.cell(row=i, column=1).coordinate)
+
+    new_row_fill = PatternFill(fgColor='F5E7EE', fill_type='solid')
     emphasis_font_color = Font(color='FF0000')
 
-    for i in range(len(dest_column_nums)):
-        ws.insert_rows(i+1)
-        ws.cell(row=i+1, column=1).value = src_column_vals[i]
-        src_row_nums.append(i+1)
+    # 更新用の値分だけ上から行追加していく。updt_src_cellsに値を設定する。
+    for idx, val in enumerate(updt_src_vals):
+        ws.insert_rows(idx + 1)
+        ws[updt_src_cells[idx]].value = val
 
-    # 表ループ開始
-    start_row = len(dest_column_nums)+2
+    # src行分下から表ループ開始
+    start_row = len(updt_src_cells) + 2
     interval = 2
+
+    # 一定間隔でloop: interval間隔で表を走査
     for i in range(start_row, ws.max_row+1, interval):
+
+        # 新規行の対象セルを上書きする
         for row in ws.iter_rows(min_row=i, max_row=i):
             for cell in row:
-                cell.fill = new_row_color
-                for i in range(len(dest_column_nums)):
-                    if ws[cell.coordinate].column == dest_column_nums[i]:
-                        cell.value = f'={
-                            ws.cell(row=src_row_nums[i], column=1).coordinate}'
+                cell.fill = new_row_fill
+
+                # 現在のセルが更新キー列か判定 >> true: srcセルへの参照を埋め込む
+                # column_keys: 更新対象となるキー列の番号を格納
+                # updt_src_cells: 参照元とするセル番地を格納
+                # キー列番号とセル番地(list)の長さ・序列は対応している
+                column_keys = list(updt_columns.keys())
+                for idx, key in enumerate(column_keys):
+                    if cell.column == key:
+                        cell.value = f'={updt_src_cells[idx]}'
                         cell.font = emphasis_font_color
 
     # 最終列にSQLを追加する
@@ -145,13 +168,14 @@ for idx, ws in enumerate(ws_list):
     # 偶数行： 切り戻し用
     append_column_no = ws.max_column+1
 
-    # SET句で使うカラムを準備
-    set_columns = []
+    # SET句で使うカラム(セル番地)を準備
+    colname_cells = []
+    colnames = list(updt_columns.values())
     for row in ws.iter_rows(min_row=start_row-1, max_row=start_row-1):
         for cell in row:
-            for i in dest_column_nums:
-                if cell.column == i:
-                    set_columns.append(cell.coordinate)
+            for colname in colnames:
+                if cell.value == colname:
+                    colname_cells.append(cell.coordinate)
 
     # queryを作成
     count = 1
@@ -171,22 +195,28 @@ for idx, ws in enumerate(ws_list):
         sql_u_body = ''
         sql_u_condition = '&"WHERE"&'
         for cell in row:
-            # query_body
-            for idx, val in enumerate(dest_column_nums):
-                column = set_columns[idx]
-                value = ws.cell(row=cell.row, column=val).coordinate
-                is_str_null = ws[value].value
 
-                if idx == len(dest_column_nums) - 1:
-                    if re.fullmatch('NULL', is_str_null, flags=re.IGNORECASE):
-                        sql_u_body += f'&" `"&{column}&"` = "&{value}&" "'
+            # query_body
+            column_keys = list(updt_columns.keys())
+            for idx, key in enumerate(column_keys):
+                col_pos = colname_cells[idx]
+                val_pos = ws.cell(row=cell.row, column=key).coordinate
+                value = ws[val_pos].value
+
+                if idx == len(column_keys) - 1:
+                    if re.fullmatch('NULL', value, flags=re.IGNORECASE):
+                        sql_u_body += \
+                            f'&" `"&{col_pos}&"` = "&{val_pos}&" "'
                     else:
-                        sql_u_body += f'&" `"&{column}&"` = \'"&{value}&"\' "'
+                        sql_u_body += \
+                            f'&" `"&{col_pos}&"` = \'"&{val_pos}&"\' "'
                 else:
-                    if re.fullmatch('NULL', is_str_null, flags=re.IGNORECASE):
-                        sql_u_body += f'&" `"&{column}&"` = "&{value}&","'
+                    if re.fullmatch('NULL', value, flags=re.IGNORECASE):
+                        sql_u_body += \
+                            f'&" `"&{col_pos}&"` = "&{val_pos}&","'
                     else:
-                        sql_u_body += f'&" `"&{column}&"` = \'"&{value}&"\',"'
+                        sql_u_body += \
+                            f'&" `"&{col_pos}&"` = \'"&{val_pos}&"\',"'
 
             # query_condition
             condition_column = ws.cell(row=start_row-1, column=1).coordinate
@@ -199,15 +229,22 @@ for idx, ws in enumerate(ws_list):
             cell.value = (sql_u_head + sql_u_body + sql_u_condition)
 
     # 確認用 select句作成
+
+    # キー列、値(セル番地)を取得する
+    # 1列目をプライマリーキー列として決め打ちしている
     s_condition_key = ws.cell(row=start_row-1, column=1).coordinate
     s_condition_values = []
+
+    # 重複がないように、行飛ばしで走査
     for i in range(start_row, ws.max_row, interval):
+
         for row in ws.iter_rows(min_row=i, max_row=i, min_col=1, max_col=1):
             for cell in row:
                 s_condition_values.append(cell.coordinate)
 
     sql_s_head = f'= "SELECT * FROM `{table}` WHERE `"&{
         s_condition_key}&"` IN("'
+
     sql_s_body = ''
     for idx, val in enumerate(s_condition_values):
         if idx == len(s_condition_values)-1:
