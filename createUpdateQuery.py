@@ -6,44 +6,54 @@
 # 外部ライブラリ
 import shutil
 import re
-import datetime as dt
 import pandas as pd
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill, Font
 from pathlib import Path
 # カスタム関数
 import functions as cf
+# クラス
+from modules import UploadManager
+
+try:
+    i = int(input('settings.jsonのキー番号を選んでください: '))
+    key = str(i)
+except ValueError:
+    # Enter an integer: abc
+    print('input error: settings.jsonのキー番号を確認してください。')
+    exit()
+
+params = cf.getParams(key, 'settings.json')
 
 '''------------------------------
 前準備
 ------------------------------'''
 root = Path('.')
-input_dir = root / 'in_updateQuery'
+input_dir = root / params['input_dir']
 input_files = sorted(list(input_dir.glob('**/*.csv')))
-output_dir = root / 'out_updateQuery'
-output_file = f'{output_dir}/test.xlsx'
+output_dir = root / params['output_dir']
+output_file = f'{output_dir}/{params['output_file']}'
 
-table = 'table'
-update_user = 'todays_user'
-update_datetime = dt.datetime.now()
+table = params['table']
+updt_clmns = params['update_key_val']
+um = UploadManager(input_files)
+updt_clmns['upload_file_url'] = um.getUrlList()
+updt_clmns['upload_filename'] = um.getFileName()
 
-exit_msg = '処理を終了します。'
 err_reasons = {
-    'dir_exists': f'{input_dir}が存在しません。ディレクトリを作成し、入力元となるcsvファイルを格納してください。',
-    'file_exists': 'csvファイルが存在しません。入力元となるcsvファイルを格納してください。'
+    'dir_err': f'{input_dir}が存在しません。ディレクトリを作成し、入力元となるcsvファイルを格納してください。',
+    'file_err': 'csvファイルが存在しません。入力元となるcsvファイルを格納してください。'
 }
-
-# 後続のループで利用するために入れ物だけ用意
-wb = None
 
 # 入力元: 存在チェック
 
 if not input_dir.exists():
-    print(f'{err_reasons['dir_exists']} \n {exit_msg}')
+    print(f'{err_reasons['dir_err']}')
     exit()
 elif not input_files:
-    print(f'{err_reasons['file_exists']} \n {exit_msg}')
+    print(f'{err_reasons['file_err']}')
     exit()
+
 
 # 出力先: 初期化
 if output_dir.exists():
@@ -55,44 +65,21 @@ output_dir.mkdir()
 csv >> excel書き出し(シート追記)
 ------------------------------'''
 
-
 ws_list = []
-new_url_list = []
 
-# 6/18 追加（未置換） dest_column_numsと置き換える
-updt_columns_idx = [4, 5, 6, 7]  # paramで受け取る
-updt_columns = {}
-##
+for i in input_files:
+    df_head = pd.read_csv(i, header=None, nrows=1)
+    # new_url = df_head.iloc[0, 0]
 
 for idx, file in enumerate(input_files):
 
-    # 1行目から新URLを取得
-    df_head = pd.read_csv(file, header=None, nrows=1)
-    new_url = df_head.iloc[0, 0]
-    new_url_list.append(new_url)
-
-    # 2行目以降からヘッダーとデータを取得
-    df = pd.read_csv(file, header=1)
+    offset_num = cf.applyOffsetNum(table)
+    df = pd.read_csv(file, header=offset_num)
     df_trimmed = df.replace(
         r'(^[\'|\"|\s]{1}[\s|\t]*|[\s|\t]*[\'|\"]{1}$)', '', regex=True)
 
-    # 6/18 追加
-    # 初回にデータフレームから更新対象列を取得する
-    if idx == 0:
-        for i in updt_columns_idx:
-            updt_columns[i] = list(df_trimmed)[i-1]
-    print(list(range(1, len(updt_columns) + 1)))
-    # iter_count分データを複製する
-    df_concat = []
-    df_result = df_trimmed
-    sortkey_dict = {'id': True}  # sortkey: isAscending(True or False)
-    iter_count = 1
-    if iter_count:
-        for i in range(iter_count+1):
-            df_concat.append(df_trimmed)
-        df_result = pd.concat(df_concat).sort_values(
-            by=list(sortkey_dict.keys()),
-            ascending=list(sortkey_dict.values()))
+    df_result = cf.duplicateDf(
+        df_trimmed, params['duplicate'], params['sortkey'])
 
     # ファイル名をシート名にする
     ws_title = re.sub('.csv', '', cf.getFileName(file))
@@ -109,28 +96,27 @@ for idx, file in enumerate(input_files):
         ) as writer:
             df_result.to_excel(writer, sheet_name=ws_title, index=False)
 
+
 # excel処理
 wb = load_workbook(output_file)
+
+updt_clmns_idx = cf.getIndex(list(df_result.columns), updt_clmns.keys())
+# ws_listの回転数分だけ更新情報セットを作成する。updt_val_units =
+#   @return: [[val1-1,val2-1,val3...], [val1-2, val2-2, val3...], ...]
+print(updt_clmns)
 
 for idx, ws in enumerate(ws_list):
     ws = wb[ws]
 
-    '''
-    上書き対象のカラム番号、参照元セルを設定
-        4: upload_filename
-        5: upload_file_url
-        6: update_user
-        7: update_datetime
-    '''
     updt_src_vals = [
-        cf.getFileName(new_url_list[idx]),
-        new_url_list[idx],
-        update_user,
-        update_datetime
+        updt_clmns['upload_filename'][idx],
+        updt_clmns['upload_file_url'][idx],
+        updt_clmns['update_user'],
+        updt_clmns['update_datetime']
     ]
 
     updt_src_cells = []
-    for i in range(1, len(updt_columns) + 1):
+    for i in range(1, len(updt_clmns) + 1):
         updt_src_cells.append(ws.cell(row=i, column=1).coordinate)
 
     new_row_fill = PatternFill(fgColor='F5E7EE', fill_type='solid')
@@ -154,11 +140,10 @@ for idx, ws in enumerate(ws_list):
                 cell.fill = new_row_fill
 
                 # 現在のセルが更新キー列か判定 >> true: srcセルへの参照を埋め込む
-                # column_keys: 更新対象となるキー列の番号を格納
+                # updt_clmns_idx: 更新対象となるキー列の番号を格納
                 # updt_src_cells: 参照元とするセル番地を格納
                 # キー列番号とセル番地(list)の長さ・序列は対応している
-                column_keys = list(updt_columns.keys())
-                for idx, key in enumerate(column_keys):
+                for idx, key in enumerate(updt_clmns_idx):
                     if cell.column == key:
                         cell.value = f'={updt_src_cells[idx]}'
                         cell.font = emphasis_font_color
@@ -170,7 +155,7 @@ for idx, ws in enumerate(ws_list):
 
     # SET句で使うカラム(セル番地)を準備
     colname_cells = []
-    colnames = list(updt_columns.values())
+    colnames = list(updt_clmns.keys())
     for row in ws.iter_rows(min_row=start_row-1, max_row=start_row-1):
         for cell in row:
             for colname in colnames:
@@ -197,13 +182,14 @@ for idx, ws in enumerate(ws_list):
         for cell in row:
 
             # query_body
-            column_keys = list(updt_columns.keys())
-            for idx, key in enumerate(column_keys):
+            for idx, key in enumerate(updt_clmns_idx):
                 col_pos = colname_cells[idx]
                 val_pos = ws.cell(row=cell.row, column=key).coordinate
                 value = ws[val_pos].value
 
-                if idx == len(column_keys) - 1:
+                # ループ 1st: ループ回数判定(最終回か否か)
+                # ループ 2nd: NULL判定
+                if idx == len(updt_clmns_idx) - 1:
                     if re.fullmatch('NULL', value, flags=re.IGNORECASE):
                         sql_u_body += \
                             f'&" `"&{col_pos}&"` = "&{val_pos}&" "'
@@ -219,11 +205,11 @@ for idx, ws in enumerate(ws_list):
                             f'&" `"&{col_pos}&"` = \'"&{val_pos}&"\',"'
 
             # query_condition
-            condition_column = ws.cell(row=start_row-1, column=1).coordinate
+            condition_col = ws.cell(row=start_row-1, column=1).coordinate
             condition_val = ws.cell(row=cell.row, column=1).coordinate
 
             sql_u_condition += f'" `"&{
-                condition_column}&"` = \'"&{condition_val}&"\';"'
+                condition_col}&"` = \'"&{condition_val}&"\';"'
 
             # cell.valueに埋め込み
             cell.value = (sql_u_head + sql_u_body + sql_u_condition)
@@ -233,21 +219,21 @@ for idx, ws in enumerate(ws_list):
     # キー列、値(セル番地)を取得する
     # 1列目をプライマリーキー列として決め打ちしている
     s_condition_key = ws.cell(row=start_row-1, column=1).coordinate
-    s_condition_values = []
+    s_condition_vals = []
 
     # 重複がないように、行飛ばしで走査
     for i in range(start_row, ws.max_row, interval):
 
         for row in ws.iter_rows(min_row=i, max_row=i, min_col=1, max_col=1):
             for cell in row:
-                s_condition_values.append(cell.coordinate)
+                s_condition_vals.append(cell.coordinate)
 
     sql_s_head = f'= "SELECT * FROM `{table}` WHERE `"&{
         s_condition_key}&"` IN("'
 
     sql_s_body = ''
-    for idx, val in enumerate(s_condition_values):
-        if idx == len(s_condition_values)-1:
+    for idx, val in enumerate(s_condition_vals):
+        if idx == len(s_condition_vals)-1:
             sql_s_body += f'&" \'"&{val}&"\' );"'
         else:
             sql_s_body += f'&" \'"&{val}&"\', "'

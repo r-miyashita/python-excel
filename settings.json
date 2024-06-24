@@ -1,0 +1,16 @@
+{
+  "1": {
+    "table": "t_product_technical_manager",
+    "input_dir": "in_updateQuery",
+    "output_dir": "out_updateQuery",
+    "output_file": "test.xlsx",
+    "update_key_val": {
+      "upload_filename": [],
+      "upload_file_url": [],
+      "update_user": "1018",
+      "update_datetime": "2024-05-31"
+    },
+    "sortkey": { "id": true },
+    "duplicate": 1
+  }
+}
