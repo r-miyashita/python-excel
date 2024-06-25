@@ -10,7 +10,18 @@
       "update_user": "1018",
       "update_datetime": "2024-05-31"
     },
-    "sortkey": { "id": true },
-    "duplicate": 1
+    "sortkey": { "id": true }
+  },
+  "2": {
+    "table": "TABLE",
+    "input_dir": "in_table",
+    "output_dir": "out_table",
+    "output_file": "testTable.xlsx",
+    "update_key_val": {
+      "updated": "",
+      "update_user": "9999",
+      "update_datetime": "2024-05-31"
+    },
+    "sortkey": { "id": true }
   }
 }

@@ -5,5 +5,7 @@ bk
 doc
 in_updateQuery/
 out_updateQuery/
+in_table/
+out_table/
 memo.txt
 ReadMe.txt

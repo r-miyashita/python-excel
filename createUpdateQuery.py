@@ -1,3 +1,6 @@
+# 参照用セルA列はカラム名を入れる
+# select のid条件を改善する(？)
+
 """
 .csvからExcelを作成する。
     csv転記(ファイル数に応じてシート追加)
@@ -16,14 +19,14 @@ import functions as cf
 from modules import UploadManager
 
 try:
-    i = int(input('settings.jsonのキー番号を選んでください: '))
-    key = str(i)
+    inputNum = int(input('settings.jsonのキー番号を選んでください: '))
+    key = str(inputNum)
 except ValueError:
     # Enter an integer: abc
     print('input error: settings.jsonのキー番号を確認してください。')
     exit()
 
-params = cf.getParams(key, 'settings.json')
+params = cf.getParamsByJson(key, 'settings.json')
 
 '''------------------------------
 前準備
@@ -36,9 +39,12 @@ output_file = f'{output_dir}/{params['output_file']}'
 
 table = params['table']
 updt_clmns = params['update_key_val']
-um = UploadManager(input_files)
-updt_clmns['upload_file_url'] = um.getUrlList()
-updt_clmns['upload_filename'] = um.getFileName()
+
+if inputNum == 1:
+    um = UploadManager(input_files)
+    updt_clmns['upload_file_url'] = um.getUrlByFiles()
+    updt_clmns['upload_filename'] = \
+        um.getFileNameByUrls(updt_clmns['upload_file_url'])
 
 err_reasons = {
     'dir_err': f'{input_dir}が存在しません。ディレクトリを作成し、入力元となるcsvファイルを格納してください。',
@@ -78,8 +84,7 @@ for idx, file in enumerate(input_files):
     df_trimmed = df.replace(
         r'(^[\'|\"|\s]{1}[\s|\t]*|[\s|\t]*[\'|\"]{1}$)', '', regex=True)
 
-    df_result = cf.duplicateDf(
-        df_trimmed, params['duplicate'], params['sortkey'])
+    df_result = cf.duplicateDf(df_trimmed, params['sortkey'])
 
     # ファイル名をシート名にする
     ws_title = re.sub('.csv', '', cf.getFileName(file))
@@ -100,30 +105,22 @@ for idx, file in enumerate(input_files):
 # excel処理
 wb = load_workbook(output_file)
 
-updt_clmns_idx = cf.getIndex(list(df_result.columns), updt_clmns.keys())
-# ws_listの回転数分だけ更新情報セットを作成する。updt_val_units =
-#   @return: [[val1-1,val2-1,val3...], [val1-2, val2-2, val3...], ...]
-print(updt_clmns)
+updt_clmns_idx = cf.getColumnIndex(list(df_result.columns), updt_clmns.keys())
+updt_clmn_names = cf.getColumnNames(updt_clmns)
+updt_src = cf.getUpdtSrcList(ws_list, updt_clmns)
 
-for idx, ws in enumerate(ws_list):
+for ws_idx, ws in enumerate(ws_list):
     ws = wb[ws]
 
-    updt_src_vals = [
-        updt_clmns['upload_filename'][idx],
-        updt_clmns['upload_file_url'][idx],
-        updt_clmns['update_user'],
-        updt_clmns['update_datetime']
-    ]
-
     updt_src_cells = []
-    for i in range(1, len(updt_clmns) + 1):
+    for i in range(1, len(updt_clmn_names) + 1):
         updt_src_cells.append(ws.cell(row=i, column=1).coordinate)
 
     new_row_fill = PatternFill(fgColor='F5E7EE', fill_type='solid')
     emphasis_font_color = Font(color='FF0000')
 
     # 更新用の値分だけ上から行追加していく。updt_src_cellsに値を設定する。
-    for idx, val in enumerate(updt_src_vals):
+    for idx, val in enumerate(updt_src[ws_idx]):
         ws.insert_rows(idx + 1)
         ws[updt_src_cells[idx]].value = val
 
@@ -163,7 +160,7 @@ for idx, ws in enumerate(ws_list):
                     colname_cells.append(cell.coordinate)
 
     # queryを作成
-    count = 1
+    row_count = 1
     for row in ws.iter_rows(
         min_row=start_row,
         max_row=ws.max_row,
@@ -171,11 +168,11 @@ for idx, ws in enumerate(ws_list):
         max_col=append_column_no
     ):
         # sql_head 切り戻し用の行はコメントアウトしておく()
-        if count % 2 == 0:
-            sql_u_head = f'="-- UPDATE {table} SET"'
+        if row_count % 2 == 0:
+            sql_u_head = f'="-- UPDATE `{table}` SET"'
         else:
-            sql_u_head = f'="UPDATE {table} SET"'
-        count += 1
+            sql_u_head = f'="UPDATE `{table}` SET"'
+        row_count += 1
 
         sql_u_body = ''
         sql_u_condition = '&"WHERE"&'

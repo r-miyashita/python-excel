@@ -8,7 +8,7 @@ class UploadManager:
     def __init__(self, files):
         self.files = files
 
-    def getUrlList(self):
+    def getUrlByFiles(self):
         url_list = []
         for f in self.files:
             df_head = pd.read_csv(f, header=None, nrows=1)
@@ -16,11 +16,11 @@ class UploadManager:
             url_list.append(new_url)
         return url_list
 
-    def getFileName(self, encoding='utf-8'):
+    def getFileNameByUrls(self, urls, encoding='utf-8'):
         filename_list = []
-        for f in self.files:
+        for i in urls:
             ptn = re.compile(r'(^.+/)')
-            f_name = re.sub(ptn, '', str(f))
+            f_name = re.sub(ptn, '', str(i))
             f_name_decoded = ul.unquote(f_name, encoding)
             filename_list.append(f_name_decoded)
         return filename_list

@@ -13,7 +13,7 @@ import pandas as pd
 ------------------------------------------------------------'''
 
 
-def getParams(key, file):
+def getParamsByJson(key, file):
     try:
         with open('./settings.json') as f:
             return json.load(f)[key]
@@ -26,20 +26,36 @@ def getParams(key, file):
 
 
 '''------------------------------------------------------------
-srcからkeyのインデックスを取得する
+データフレームのヘッダーカラムから更新カラムのインデックスを特定し取得する
 @param
-    src: list
-    keys: list
+    header: list
+    updt_clmns: list
 @return
     idx_list: list
 ------------------------------------------------------------'''
 
 
-def getIndex(src, keys):
-    results = []
-    for key in keys:
-        results.append(src.index(key) + 1)
-    return results
+def getColumnIndex(header, updt_clmns):
+    idx_list = []
+    for clmn in updt_clmns:
+        idx_list.append(header.index(clmn) + 1)
+    return idx_list
+
+
+'''------------------------------------------------------------
+更新情報から更新カラム名を取得する
+@param
+    updt_src: dict
+@return
+    name_list: list
+------------------------------------------------------------'''
+
+
+def getColumnNames(updt_src):
+    name_list = []
+    for i in updt_src.keys():
+        name_list.append(i)
+    return name_list
 
 
 '''------------------------------------------------------------
@@ -89,14 +105,14 @@ def getFileName(filePath, encoding='utf-8'):
 データフレームを複製する
 @param
     df: DataFrame
-    iter_count: int
     sortOpt: dict: {sortkey(str): isAscending(bool)}
+    iter_count: int ※デフォルト値
 @return
     df_result: Dataframe
 ------------------------------------------------------------'''
 
 
-def duplicateDf(df, iter_count, sortOpt):
+def duplicateDf(df, sortOpt, iter_count=1):
     df_concat = []
     if iter_count:
         for i in range(iter_count + 1):
@@ -112,11 +128,20 @@ def duplicateDf(df, iter_count, sortOpt):
 
 
 '''------------------------------------------------------------
-update情報から、値セットを作成する。
+更新用の情報をワークシート単位に切り分け、リスト化する。
 @param
-    df: DataFrame
-    iter_count: int
-    sortOpt: dict: {sortkey(str): isAscending(bool)}
+    ws_list: list
+    updt_src: dict
 @return
-    df_result: Dataframe
+    src_list: list
 ------------------------------------------------------------'''
+
+
+def getUpdtSrcList(ws_list, updt_src):
+    src_list = []
+    for i in range(len(ws_list)):
+        items = []
+        for j in updt_src.values():
+            items.append(j[i]) if isinstance(j, list) else items.append(j)
+        src_list.append(items)
+    return src_list
