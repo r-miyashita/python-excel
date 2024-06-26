@@ -1,5 +1,4 @@
 # 参照用セルA列はカラム名を入れる
-# select のid条件を改善する(？)
 
 """
 .csvからExcelを作成する。
@@ -113,16 +112,22 @@ for ws_idx, ws in enumerate(ws_list):
     ws = wb[ws]
 
     updt_src_cells = []
+    updt_src_cell_vals = []
     for i in range(1, len(updt_clmn_names) + 1):
         updt_src_cells.append(ws.cell(row=i, column=1).coordinate)
+        updt_src_cell_vals.append(ws.cell(row=i, column=2).coordinate)
 
-    new_row_fill = PatternFill(fgColor='F5E7EE', fill_type='solid')
+    fill_color1 = PatternFill(fgColor='7AF5D8', fill_type='solid')
+    fill_color2 = PatternFill(fgColor='F5E7EE', fill_type='solid')
+
     emphasis_font_color = Font(color='FF0000')
 
     # 更新用の値分だけ上から行追加していく。updt_src_cellsに値を設定する。
     for idx, val in enumerate(updt_src[ws_idx]):
         ws.insert_rows(idx + 1)
-        ws[updt_src_cells[idx]].value = val
+        ws[updt_src_cells[idx]].value = updt_clmn_names[idx]
+        ws[updt_src_cells[idx]].fill = fill_color1
+        ws[updt_src_cell_vals[idx]].value = val
 
     # src行分下から表ループ開始
     start_row = len(updt_src_cells) + 2
@@ -134,7 +139,7 @@ for ws_idx, ws in enumerate(ws_list):
         # 新規行の対象セルを上書きする
         for row in ws.iter_rows(min_row=i, max_row=i):
             for cell in row:
-                cell.fill = new_row_fill
+                cell.fill = fill_color2
 
                 # 現在のセルが更新キー列か判定 >> true: srcセルへの参照を埋め込む
                 # updt_clmns_idx: 更新対象となるキー列の番号を格納
@@ -142,7 +147,7 @@ for ws_idx, ws in enumerate(ws_list):
                 # キー列番号とセル番地(list)の長さ・序列は対応している
                 for idx, key in enumerate(updt_clmns_idx):
                     if cell.column == key:
-                        cell.value = f'={updt_src_cells[idx]}'
+                        cell.value = f'={updt_src_cell_vals[idx]}'
                         cell.font = emphasis_font_color
 
     # 最終列にSQLを追加する
@@ -218,22 +223,24 @@ for ws_idx, ws in enumerate(ws_list):
     s_condition_key = ws.cell(row=start_row-1, column=1).coordinate
     s_condition_vals = []
 
-    # 重複がないように、行飛ばしで走査
-    for i in range(start_row, ws.max_row, interval):
+    # 1列目を走査し、条件カラム値を取得
+    for i in range(start_row, ws.max_row):
 
         for row in ws.iter_rows(min_row=i, max_row=i, min_col=1, max_col=1):
             for cell in row:
-                s_condition_vals.append(cell.coordinate)
+                s_condition_vals.append(cell.value)
+
+    s_condition_vals = sorted(list(set(s_condition_vals)))
 
     sql_s_head = f'= "SELECT * FROM `{table}` WHERE `"&{
-        s_condition_key}&"` IN("'
+        s_condition_key}&"` IN('
 
     sql_s_body = ''
     for idx, val in enumerate(s_condition_vals):
         if idx == len(s_condition_vals)-1:
-            sql_s_body += f'&" \'"&{val}&"\' );"'
+            sql_s_body += f' \'{val}\' );"'
         else:
-            sql_s_body += f'&" \'"&{val}&"\', "'
+            sql_s_body += f' \'{val}\', '
 
     ws.cell(row=ws.max_row+2, column=1).value = '確認用クエリ'
     ws.cell(row=ws.max_row+1, column=1).value = sql_s_head + sql_s_body
