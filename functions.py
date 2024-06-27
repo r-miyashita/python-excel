@@ -15,13 +15,13 @@ import pandas as pd
 
 def getParamsByJson(key, file):
     try:
-        with open('./settings.json') as f:
+        with open(file) as f:
             return json.load(f)[key]
     except FileNotFoundError as fe:
-        print(f'file error: ファイルが存在しません：{fe}')
+        print(f'file error: 設定ファイルが存在しません：{fe}')
         exit()
     except KeyError as ke:
-        print(f'key error: キーが存在しません：{ke}')
+        print(f'key error: キー番号が{file} に存在しません：{ke}')
         exit()
 
 

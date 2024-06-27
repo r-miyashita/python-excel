@@ -10,11 +10,11 @@
 |  | out_put_dir |  |  |
 |  | output_file |  |  |
 |  | table |  |  |
-| updt_key_val | updt_clmns | dict |  |
+| key_val_dict | updt_clmns | dict |  |
 |  | ws_list | list |  |
-|  | updt_clmns_idx | list | 更新カラムのインデックス |
-|  | updt_clmns_names | list | 更新カラム名 |
-|  | updt_src | list | 更新情報 |
+| key_idxs | updt_clmns_idx | list | 更新カラムのインデックス |
+| keys | updt_clmn_names | list | 更新カラム名 |
+| vals_per_ws | updt_src | list | 更新情報 |
 | key_addrs | updt_src_cells | list | 更新カラム名のセル情報 |
 | val_addrs | updt_src_cell_vals | list | 更新値のセル情報 |
 | append_col_no | append_column_no | int | 追加列の番号 |

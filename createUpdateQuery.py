@@ -1,10 +1,12 @@
-# 参照用セルA列はカラム名を入れる
+"""--------------------------------------------------
+createUpdateQuery.py
 
-"""
-.csvからExcelを作成する。
-    csv転記(ファイル数に応じてシート追加)
-    sql生成（excel式埋め込み）
-"""
+    csvからUPDATEクエリ付きのEXCELファイルを作成する。
+    @in:
+        *.csv
+        settings.update.json
+    @out: 任意名.xlsx
+--------------------------------------------------"""
 # 外部ライブラリ
 import shutil
 import re
@@ -17,19 +19,24 @@ import functions as cf
 # クラス
 from modules import UploadManager
 
+
+'''========================================
+設定ファイル読み込み
+========================================'''
+jsn = 'settings.update.json'
+
 try:
-    inputNum = int(input('settings.jsonのキー番号を選んでください: '))
+    inputNum = int(input(f'{jsn}のキー番号を選んでください: '))
     key = str(inputNum)
 except ValueError:
     # Enter an integer: abc
-    print('input error: settings.jsonのキー番号を確認してください。')
-    exit()
+    exit(f'input error: {jsn}のキー番号を確認してください。')
 
-params = cf.getParamsByJson(key, 'settings.json')
-
-'''------------------------------
+'''========================================
 前準備
-------------------------------'''
+========================================'''
+params = cf.getParamsByJson(key, jsn)
+
 root = Path('.')
 input_dir = root / params['input_dir']
 input_files = sorted(list(input_dir.glob('**/*.csv')))
@@ -37,28 +44,27 @@ output_dir = root / params['output_dir']
 output_file = f'{output_dir}/{params['output_file']}'
 
 table = params['table']
-updt_clmns = params['update_key_val']
+key_val_dict = params['update_key_val']
 
+# 特定のテーブル用の処理
 if inputNum == 1:
     um = UploadManager(input_files)
-    updt_clmns['upload_file_url'] = um.getUrlByFiles()
-    updt_clmns['upload_filename'] = \
-        um.getFileNameByUrls(updt_clmns['upload_file_url'])
-
-err_reasons = {
-    'dir_err': f'{input_dir}が存在しません。ディレクトリを作成し、入力元となるcsvファイルを格納してください。',
-    'file_err': 'csvファイルが存在しません。入力元となるcsvファイルを格納してください。'
-}
+    key_val_dict['upload_file_url'] = um.getUrlByFiles()
+    key_val_dict['upload_filename'] = \
+        um.getFileNameByUrls(key_val_dict['upload_file_url'])
 
 # 入力元: 存在チェック
+try:
+    if not input_dir.exists():
+        raise FileNotFoundError
+except FileNotFoundError:
+    exit(f'{input_dir} が存在しません。')
 
-if not input_dir.exists():
-    print(f'{err_reasons['dir_err']}')
-    exit()
-elif not input_files:
-    print(f'{err_reasons['file_err']}')
-    exit()
-
+try:
+    if not input_files:
+        raise FileNotFoundError
+except FileNotFoundError:
+    exit(f'{input_dir} にcsvファイルが存在しません。')
 
 # 出力先: 初期化
 if output_dir.exists():
@@ -66,9 +72,9 @@ if output_dir.exists():
 output_dir.mkdir()
 
 
-'''------------------------------
-csv >> excel書き出し(シート追記)
-------------------------------'''
+'''========================================
+csv >> excel書き出し
+========================================'''
 
 ws_list = []
 
@@ -100,37 +106,40 @@ for idx, file in enumerate(input_files):
         ) as writer:
             df_result.to_excel(writer, sheet_name=ws_title, index=False)
 
+'''========================================
+excel処理
+========================================'''
 
-# excel処理
 wb = load_workbook(output_file)
 
-updt_clmns_idx = cf.getColumnIndex(list(df_result.columns), updt_clmns.keys())
-updt_clmn_names = cf.getColumnNames(updt_clmns)
-updt_src = cf.getUpdtSrcList(ws_list, updt_clmns)
+key_idxs = cf.getColumnIndex(
+    list(df_result.columns), key_val_dict.keys())
+keys = cf.getColumnNames(key_val_dict)
+vals_per_ws = cf.getUpdtSrcList(ws_list, key_val_dict)
 
 for ws_idx, ws in enumerate(ws_list):
     ws = wb[ws]
 
-    updt_src_cells = []
-    updt_src_cell_vals = []
-    for i in range(1, len(updt_clmn_names) + 1):
-        updt_src_cells.append(ws.cell(row=i, column=1).coordinate)
-        updt_src_cell_vals.append(ws.cell(row=i, column=2).coordinate)
+    key_addrs = []
+    val_addrs = []
+    for i in range(1, len(keys) + 1):
+        key_addrs.append(ws.cell(row=i, column=1).coordinate)
+        val_addrs.append(ws.cell(row=i, column=2).coordinate)
 
     fill_color1 = PatternFill(fgColor='7AF5D8', fill_type='solid')
     fill_color2 = PatternFill(fgColor='F5E7EE', fill_type='solid')
 
     emphasis_font_color = Font(color='FF0000')
 
-    # 更新用の値分だけ上から行追加していく。updt_src_cellsに値を設定する。
-    for idx, val in enumerate(updt_src[ws_idx]):
+    # 更新用の値分だけ上から行追加していく。key_addrsに値を設定する。
+    for idx, val in enumerate(vals_per_ws[ws_idx]):
         ws.insert_rows(idx + 1)
-        ws[updt_src_cells[idx]].value = updt_clmn_names[idx]
-        ws[updt_src_cells[idx]].fill = fill_color1
-        ws[updt_src_cell_vals[idx]].value = val
+        ws[key_addrs[idx]].value = keys[idx]
+        ws[key_addrs[idx]].fill = fill_color1
+        ws[val_addrs[idx]].value = val
 
     # src行分下から表ループ開始
-    start_row = len(updt_src_cells) + 2
+    start_row = len(key_addrs) + 2
     interval = 2
 
     # 一定間隔でloop: interval間隔で表を走査
@@ -142,35 +151,38 @@ for ws_idx, ws in enumerate(ws_list):
                 cell.fill = fill_color2
 
                 # 現在のセルが更新キー列か判定 >> true: srcセルへの参照を埋め込む
-                # updt_clmns_idx: 更新対象となるキー列の番号を格納
-                # updt_src_cells: 参照元とするセル番地を格納
+                # key_idxs: 更新対象となるキー列の番号を格納
+                # key_addrs: 参照元とするセル番地を格納
                 # キー列番号とセル番地(list)の長さ・序列は対応している
-                for idx, key in enumerate(updt_clmns_idx):
+                for idx, key in enumerate(key_idxs):
                     if cell.column == key:
-                        cell.value = f'={updt_src_cell_vals[idx]}'
+                        cell.value = f'={val_addrs[idx]}'
                         cell.font = emphasis_font_color
 
-    # 最終列にSQLを追加する
-    # 奇数行： 更新用
-    # 偶数行： 切り戻し用
-    append_column_no = ws.max_column+1
+    '''------------------------------
+    SQL生成スタート
+    ------------------------------'''
+    # 表の最後にSQL用の列を追加
+    append_col_no = ws.max_column+1
 
     # SET句で使うカラム(セル番地)を準備
-    colname_cells = []
-    colnames = list(updt_clmns.keys())
+    set_key_addrs = []
+    keys_info = list(key_val_dict.keys())
     for row in ws.iter_rows(min_row=start_row-1, max_row=start_row-1):
         for cell in row:
-            for colname in colnames:
-                if cell.value == colname:
-                    colname_cells.append(cell.coordinate)
+            for key in keys_info:
+                if cell.value == key:
+                    set_key_addrs.append(cell.coordinate)
 
-    # queryを作成
+    '''********************
+    UPDATE句
+    ********************'''
     row_count = 1
     for row in ws.iter_rows(
         min_row=start_row,
         max_row=ws.max_row,
-        min_col=append_column_no,
-        max_col=append_column_no
+        min_col=append_col_no,
+        max_col=append_col_no
     ):
         # sql_head 切り戻し用の行はコメントアウトしておく()
         if row_count % 2 == 0:
@@ -184,42 +196,43 @@ for ws_idx, ws in enumerate(ws_list):
         for cell in row:
 
             # query_body
-            for idx, key in enumerate(updt_clmns_idx):
-                col_pos = colname_cells[idx]
-                val_pos = ws.cell(row=cell.row, column=key).coordinate
-                value = ws[val_pos].value
+            for idx, key in enumerate(key_idxs):
+                set_key_addr = set_key_addrs[idx]
+                set_val_addr = ws.cell(row=cell.row, column=key).coordinate
+                value = ws[set_val_addr].value
 
                 # ループ 1st: ループ回数判定(最終回か否か)
                 # ループ 2nd: NULL判定
-                if idx == len(updt_clmns_idx) - 1:
+                if idx == len(key_idxs) - 1:
                     if re.fullmatch('NULL', value, flags=re.IGNORECASE):
                         sql_u_body += \
-                            f'&" `"&{col_pos}&"` = "&{val_pos}&" "'
+                            f'&" `"&{set_key_addr}&"` = "&{set_val_addr}&" "'
                     else:
                         sql_u_body += \
-                            f'&" `"&{col_pos}&"` = \'"&{val_pos}&"\' "'
+                            f'&" `"&{set_key_addr}&"` = \'"&{
+                                set_val_addr}&"\' "'
                 else:
                     if re.fullmatch('NULL', value, flags=re.IGNORECASE):
                         sql_u_body += \
-                            f'&" `"&{col_pos}&"` = "&{val_pos}&","'
+                            f'&" `"&{set_key_addr}&"` = "&{set_val_addr}&","'
                     else:
                         sql_u_body += \
-                            f'&" `"&{col_pos}&"` = \'"&{val_pos}&"\',"'
+                            f'&" `"&{set_key_addr}&"` = \'"&{
+                                set_val_addr}&"\',"'
 
             # query_condition
-            condition_col = ws.cell(row=start_row-1, column=1).coordinate
-            condition_val = ws.cell(row=cell.row, column=1).coordinate
+            cond_key_addr = ws.cell(row=start_row-1, column=1).coordinate
+            cond_val_addr = ws.cell(row=cell.row, column=1).coordinate
 
-            sql_u_condition += f'" `"&{
-                condition_col}&"` = \'"&{condition_val}&"\';"'
+            sql_u_condition += \
+                f'" `"&{cond_key_addr}&"` = \'"&{cond_val_addr}&"\';"'
 
             # cell.valueに埋め込み
             cell.value = (sql_u_head + sql_u_body + sql_u_condition)
 
-    # 確認用 select句作成
-
-    # キー列、値(セル番地)を取得する
-    # 1列目をプライマリーキー列として決め打ちしている
+    '''********************
+    SELECT句
+    ********************'''
     s_condition_key = ws.cell(row=start_row-1, column=1).coordinate
     s_condition_vals = []
 
