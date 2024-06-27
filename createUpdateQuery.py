@@ -80,7 +80,6 @@ ws_list = []
 
 for i in input_files:
     df_head = pd.read_csv(i, header=None, nrows=1)
-    # new_url = df_head.iloc[0, 0]
 
 for idx, file in enumerate(input_files):
 
