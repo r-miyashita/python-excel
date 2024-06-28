@@ -4,12 +4,13 @@ import urllib.parse as ul
 import pandas as pd
 
 '''------------------------------------------------------------
-ファイルからパラメータを取得する
-@param
-    key: str: 取り出したいテーブルのインデックス
-    jsn: str: 設定ファイル
-@return
-    params: dict: 設定ファイル内の当該テーブル情報
+getParamsByJson
+    ファイルからパラメータを取得する
+        @param
+            key: str: 取り出したいテーブルのインデックス
+            jsn: str: 設定ファイル
+        @return
+            params: dict: 設定ファイル内の当該テーブル情報
 ------------------------------------------------------------'''
 
 
@@ -26,12 +27,13 @@ def getParamsByJson(key, jsn):
 
 
 '''------------------------------------------------------------
-データフレームのヘッダーカラムから更新カラムのインデックスを特定し取得する
-@param
-    header: list: ヘッダー情報
-    updt_clmns: list: 更新カラム名
-@return
-    idx_list: list: ヘッダー内更新カラムのインデックス
+getColumnIndex
+    データフレームのヘッダーカラムから更新カラムのインデックスを特定し取得する
+        @param
+            header: list: ヘッダー情報
+            updt_clmns: list: 更新カラム名
+        @return
+            idx_list: list: ヘッダー内更新カラムのインデックス
 ------------------------------------------------------------'''
 
 
@@ -43,11 +45,12 @@ def getColumnIndex(header, updt_clmns):
 
 
 '''------------------------------------------------------------
-更新情報から更新カラム名を取得する
-@param
-    key_val_dict: dict: 「カラム名:値」 を格納した辞書
-@return
-    name_list: list: カラム名リスト
+getColumnNames
+    更新情報から更新カラム名を取得する
+        @param
+            key_val_dict: dict: 「カラム名:値」 を格納した辞書
+        @return
+            name_list: list: カラム名リスト
 ------------------------------------------------------------'''
 
 
@@ -59,11 +62,12 @@ def getColumnNames(key_val_dict):
 
 
 '''------------------------------------------------------------
-ヘッダーオフセット行を取得する( file読み込みの開始行 )
-@param
-    table: str
-@return
-    offset_num: num
+applyOffsetNum
+    ヘッダーオフセット行を取得する( file読み込みの開始行 )
+        @param
+            table: str
+        @return
+            offset_num: num
 ------------------------------------------------------------'''
 
 
@@ -79,19 +83,19 @@ def applyOffsetNum(table):
 
 
 '''------------------------------------------------------------
-ファイルパスからファイル名を取り出す
-(%エンコードはデコードする)
-ex)
-    in: xxxx/xxxx/zzzz/file.csv
-    out: file.csv
+getFileName
+    ファイルパスからファイル名を取り出す (%エンコードはデコードする)
+    ex)
+        in: xxxx/xxxx/zzzz/file.csv
+        out: file.csv
 
-@param
-    filePath: str
-    encoding: str
-        'shift-jis'
-        ''utf-8': デフォルト値
-@return
-    file_name_decoded: str
+        @param
+            filePath: str
+            encoding: str
+                'shift-jis'
+                ''utf-8': デフォルト値
+        @return
+            file_name_decoded: str
 ------------------------------------------------------------'''
 
 
@@ -103,13 +107,14 @@ def getFileName(filePath, encoding='utf-8'):
 
 
 '''------------------------------------------------------------
-データフレームを複製する
-@param
-    df: DataFrame: 基底データ
-    sortOpt: dict: ソートキー名と昇降順設定 {sortkey(str): isAscending(bool)}
-    iter_count: int: 複製数制御( 現状は1セット複製のみ取り扱う )
-@return
-    df_result: Dataframe
+duplicateDf
+    データフレームを複製する
+        @param
+            df: DataFrame: 基底データ
+            sortOpt: dict: ソートキー名と昇降順設定 {sortkey(str): isAscending(bool)}
+            iter_count: int: 複製数制御( 現状は1セット複製のみ取り扱う )
+        @return
+            df_result: Dataframe
 ------------------------------------------------------------'''
 
 
@@ -129,12 +134,13 @@ def duplicateDf(df, sortOpt, iter_count=1):
 
 
 '''------------------------------------------------------------
-更新用の情報をワークシート単位に切り分け、リスト化する。
-@param
-    ws_list: list: ワークシート名のリスト
-    key_val_dict: dict: 「カラム名:値」 を格納した辞書
-@return
-    val_list: list: ワークシートに対応する値セット
+getUpdtSrcList
+    更新用の情報をワークシート単位に切り分け、リスト化する。
+        @param
+            ws_list: list: ワークシート名のリスト
+            key_val_dict: dict: 「カラム名:値」 を格納した辞書
+        @return
+            val_list: list: ワークシートに対応する値セット
 ------------------------------------------------------------'''
 
 
