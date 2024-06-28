@@ -6,32 +6,32 @@ import pandas as pd
 '''------------------------------------------------------------
 ファイルからパラメータを取得する
 @param
-    key: str
-    file: str
+    key: str: 取り出したいテーブルのインデックス
+    jsn: str: 設定ファイル
 @return
-    params: dict
+    params: dict: 設定ファイル内の当該テーブル情報
 ------------------------------------------------------------'''
 
 
-def getParamsByJson(key, file):
+def getParamsByJson(key, jsn):
     try:
-        with open(file) as f:
+        with open(jsn) as f:
             return json.load(f)[key]
     except FileNotFoundError as fe:
         print(f'file error: 設定ファイルが存在しません：{fe}')
         exit()
     except KeyError as ke:
-        print(f'key error: キー番号が{file} に存在しません：{ke}')
+        print(f'key error: キー番号が{jsn} に存在しません：{ke}')
         exit()
 
 
 '''------------------------------------------------------------
 データフレームのヘッダーカラムから更新カラムのインデックスを特定し取得する
 @param
-    header: list
-    updt_clmns: list
+    header: list: ヘッダー情報
+    updt_clmns: list: 更新カラム名
 @return
-    idx_list: list
+    idx_list: list: ヘッダー内更新カラムのインデックス
 ------------------------------------------------------------'''
 
 
@@ -45,15 +45,15 @@ def getColumnIndex(header, updt_clmns):
 '''------------------------------------------------------------
 更新情報から更新カラム名を取得する
 @param
-    updt_src: dict
+    key_val_dict: dict: 「カラム名:値」 を格納した辞書
 @return
-    name_list: list
+    name_list: list: カラム名リスト
 ------------------------------------------------------------'''
 
 
-def getColumnNames(updt_src):
+def getColumnNames(key_val_dict):
     name_list = []
-    for i in updt_src.keys():
+    for i in key_val_dict.keys():
         name_list.append(i)
     return name_list
 
@@ -81,6 +81,10 @@ def applyOffsetNum(table):
 '''------------------------------------------------------------
 ファイルパスからファイル名を取り出す
 (%エンコードはデコードする)
+ex)
+    in: xxxx/xxxx/zzzz/file.csv
+    out: file.csv
+
 @param
     filePath: str
     encoding: str
@@ -88,9 +92,6 @@ def applyOffsetNum(table):
         ''utf-8': デフォルト値
 @return
     file_name_decoded: str
-ex)
-    in: xxxx/xxxx/zzzz/file.csv
-    out: file.csv
 ------------------------------------------------------------'''
 
 
@@ -104,9 +105,9 @@ def getFileName(filePath, encoding='utf-8'):
 '''------------------------------------------------------------
 データフレームを複製する
 @param
-    df: DataFrame
-    sortOpt: dict: {sortkey(str): isAscending(bool)}
-    iter_count: int ※デフォルト値
+    df: DataFrame: 基底データ
+    sortOpt: dict: ソートキー名と昇降順設定 {sortkey(str): isAscending(bool)}
+    iter_count: int: 複製数制御( 現状は1セット複製のみ取り扱う )
 @return
     df_result: Dataframe
 ------------------------------------------------------------'''
@@ -130,18 +131,22 @@ def duplicateDf(df, sortOpt, iter_count=1):
 '''------------------------------------------------------------
 更新用の情報をワークシート単位に切り分け、リスト化する。
 @param
-    ws_list: list
-    updt_src: dict
+    ws_list: list: ワークシート名のリスト
+    key_val_dict: dict: 「カラム名:値」 を格納した辞書
 @return
-    src_list: list
+    val_list: list: ワークシートに対応する値セット
 ------------------------------------------------------------'''
 
 
-def getUpdtSrcList(ws_list, updt_src):
+def getUpdtSrcList(ws_list, key_val_dict):
     src_list = []
     for i in range(len(ws_list)):
         items = []
-        for j in updt_src.values():
-            items.append(j[i]) if isinstance(j, list) else items.append(j)
+        for val in key_val_dict.values():
+            if isinstance(val, list):
+                items.append(val[i])
+            else:
+                items.append(val)
+
         src_list.append(items)
     return src_list

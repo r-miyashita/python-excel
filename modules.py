@@ -2,6 +2,25 @@ import pandas as pd
 import re
 import urllib.parse as ul
 
+'''============================================================
+UploadManager
+
+    S3管理用のテーブル更新の際はINデータ(.csv)にオブジェクトURL情報を追記しておく運用
+    ファイルを受け取り、URL情報を加工するためのクラス
+============================================================'''
+
+'''---------------------------------------------
+getUrlByFiles
+    インプットファイル数分のオブジェクトURLを取得
+        @return
+            url_list: list
+
+getFileNameByUrls
+    URLの末尾ファイル名のみ取得
+        @return
+            filename_list: list
+---------------------------------------------'''
+
 
 class UploadManager:
 
