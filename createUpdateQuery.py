@@ -39,7 +39,7 @@ params = cf.getParamsByJson(str(inputNum), jsn)
 
 root = Path('.')
 input_dir = root / params['input_dir']
-input_files = sorted(list(input_dir.glob('**/*.csv')))
+input_files = list(input_dir.glob('**/*.csv'))
 output_dir = root / params['output_dir']
 output_file = f'{output_dir}/{params['output_file']}'
 
@@ -49,7 +49,8 @@ key_val_dict = params['update_key_val']
 # 特定のテーブル用の処理
 if inputNum == 1:
     um = UploadManager(input_files)
-    key_val_dict['upload_file_url'] = um.getUrlByFiles()
+    key_val_dict['upload_file_url'] = \
+        um.getUrlByFiles(params['replace_domain'])
     key_val_dict['upload_filename'] = \
         um.getFileNameByUrls(key_val_dict['upload_file_url'])
 
@@ -115,7 +116,7 @@ wb = load_workbook(output_file)
 key_idxs = cf.getColumnIndex(
     list(df_result.columns), key_val_dict.keys())
 keys = cf.getColumnNames(key_val_dict)
-vals_per_ws = cf.getUpdtSrcList(ws_list, key_val_dict)
+vals_per_ws = cf.getUpdtSrc(ws_list, key_val_dict)
 
 for ws_idx, ws in enumerate(ws_list):
     ws = wb[ws]

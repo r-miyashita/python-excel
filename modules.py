@@ -27,16 +27,20 @@ class UploadManager:
     def __init__(self, files):
         self.files = files
 
-    def getUrlByFiles(self):
+    def getUrlByFiles(self, replace_ptn):
         url_list = []
+        r_tgt = replace_ptn['tgt']
+        r_src = replace_ptn['src']
+
         for f in self.files:
             df_head = pd.read_csv(f, header=None, nrows=1)
-            new_url = df_head.iloc[0, 0]
-            url_list.append(new_url)
+            url = df_head.iloc[0, 0]
+            url_list.append(re.sub(r_tgt, r_src, url))
         return url_list
 
     def getFileNameByUrls(self, urls, encoding='utf-8'):
         filename_list = []
+
         for i in urls:
             ptn = re.compile(r'(^.+/)')
             f_name = re.sub(ptn, '', str(i))

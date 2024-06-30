@@ -134,7 +134,7 @@ def duplicateDf(df, sortOpt, iter_count=1):
 
 
 '''------------------------------------------------------------
-getUpdtSrcList
+getUpdtSrc
     更新用の情報をワークシート単位に切り分け、リスト化する。
         @param
             ws_list: list: ワークシート名のリスト
@@ -144,7 +144,7 @@ getUpdtSrcList
 ------------------------------------------------------------'''
 
 
-def getUpdtSrcList(ws_list, key_val_dict):
+def getUpdtSrc(ws_list, key_val_dict):
     src_list = []
     for i in range(len(ws_list)):
         items = []

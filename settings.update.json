@@ -1,27 +1,31 @@
 {
-  "1": {
-    "table": "t_product_technical_manager",
-    "input_dir": "in_updateQuery",
-    "output_dir": "out_updateQuery",
-    "output_file": "test.xlsx",
-    "update_key_val": {
-      "upload_filename": [],
-      "upload_file_url": [],
-      "update_user": "1018",
-      "update_datetime": "2024-05-31"
+    "1": {
+        "table": "t_product_technical_manager",
+        "input_dir": "in_updateQuery",
+        "output_dir": "out_updateQuery",
+        "output_file": "test.xlsx",
+        "update_key_val": {
+            "upload_filename": [],
+            "upload_file_url": [],
+            "update_user": "1018",
+            "update_datetime": "2024-05-31"
+        },
+        "sortkey": { "id": true },
+        "replace_domain": {
+            "tgt": "aws_north.com",
+            "src": "crowdfront.com"
+        }
     },
-    "sortkey": { "id": true }
-  },
-  "2": {
-    "table": "TABLE",
-    "input_dir": "in_table",
-    "output_dir": "out_table",
-    "output_file": "testTable.xlsx",
-    "update_key_val": {
-      "updated": "",
-      "update_user": "9999",
-      "update_datetime": "2024-05-31"
-    },
-    "sortkey": { "id": true }
-  }
+    "2": {
+        "table": "TABLE",
+        "input_dir": "in_table",
+        "output_dir": "out_table",
+        "output_file": "testTable.xlsx",
+        "update_key_val": {
+            "updated": ["up", "da", "ted"],
+            "update_user": ["1", "2", "3"],
+            "update_datetime": "2024-05-31"
+        },
+        "sortkey": { "id": true }
+    }
 }
