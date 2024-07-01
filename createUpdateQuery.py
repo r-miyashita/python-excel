@@ -11,6 +11,7 @@ createUpdateQuery.py
 import shutil
 import re
 import pandas as pd
+import polars as pl
 from openpyxl import load_workbook
 from openpyxl.styles import PatternFill, Font
 from pathlib import Path
@@ -39,7 +40,7 @@ params = cf.getParamsByJson(str(inputNum), jsn)
 
 root = Path('.')
 input_dir = root / params['input_dir']
-input_files = list(input_dir.glob('**/*.csv'))
+input_files = sorted(list(input_dir.glob('**/*.csv')))
 output_dir = root / params['output_dir']
 output_file = f'{output_dir}/{params['output_file']}'
 
@@ -80,12 +81,20 @@ csv >> excel書き出し
 ws_list = []
 
 for f in input_files:
-    df_head = pd.read_csv(f, header=None, nrows=1)
+    df_head = pd.read_csv(f, header=None, nrows=1, dtype=str)
 
 for f_idx, f in enumerate(input_files):
 
+    # 空文字・NULL取り込みのため、polars経由で取り込み
     offset_num = cf.applyOffsetNum(table)
-    df = pd.read_csv(f, header=offset_num)
+    # pl.Config.set_tbl_rows(-1)
+    df = pl.read_csv(
+        f,
+        skip_rows=offset_num,
+        infer_schema_length=0,
+        null_values=[]
+    ).to_pandas()
+
     df_trimmed = df.replace(
         r'(^[\'|\"|\s]{1}[\s|\t]*|[\s|\t]*[\'|\"]{1}$)', '', regex=True)
 
@@ -202,7 +211,7 @@ for ws_idx, ws in enumerate(ws_list):
             for k_idx, k_num in enumerate(key_idxs):
                 set_key_addr = set_key_addrs[k_idx]
                 set_val_addr = ws.cell(row=cell.row, column=k_num).coordinate
-                value = ws[set_val_addr].value
+                value = str(ws[set_val_addr].value)
 
                 # ループ 1st: ループ回数判定(最終回か否か)
                 # ループ 2nd: NULL判定
@@ -248,15 +257,15 @@ for ws_idx, ws in enumerate(ws_list):
 
     s_condition_vals = sorted(list(set(s_cond_vals)))
 
-    sql_s_head = f'= "SELECT * FROM `{table}` WHERE `"&{
-        s_cond_key}&"` IN('
+    sql_s_head = \
+        f'= "SELECT * FROM `{table}` WHERE `"&{s_cond_key}&"` IN("'
 
     sql_s_body = ''
     for idx, val in enumerate(s_condition_vals):
         if idx == len(s_condition_vals)-1:
-            sql_s_body += f' \'{val}\' );"'
+            sql_s_body += f' &"\'{val}\' );"'
         else:
-            sql_s_body += f' \'{val}\', '
+            sql_s_body += f' &"\'{val}\', "'
 
     ws.cell(row=ws.max_row+2, column=1).value = '確認用クエリ'
     ws.cell(row=ws.max_row+1, column=1).value = sql_s_head + sql_s_body

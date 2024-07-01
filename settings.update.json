@@ -17,15 +17,15 @@
         }
     },
     "2": {
-        "table": "TABLE",
-        "input_dir": "in_table",
-        "output_dir": "out_table",
-        "output_file": "testTable.xlsx",
+        "table": "country",
+        "input_dir": "in_testUQ",
+        "output_dir": "out_testUQ",
+        "output_file": "schemeWorld.xlsx",
         "update_key_val": {
-            "updated": ["up", "da", "ted"],
-            "update_user": ["1", "2", "3"],
-            "update_datetime": "2024-05-31"
+            "Continent": ["Africa", "Asia"],
+            "IndepYear": "2024",
+            "GNP": ["5000", "7000"]
         },
-        "sortkey": { "id": true }
+        "sortkey": { "Code": true }
     }
 }

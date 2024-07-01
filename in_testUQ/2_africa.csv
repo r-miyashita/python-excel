@@ -1,0 +1,59 @@
+Code,Name,Continent,Region,SurfaceArea,IndepYear,Population,LifeExpectancy,GNP,GNPOld,LocalName,GovernmentForm,HeadOfState,Capital,Code2
+AGO,Angola,Africa,"Central Africa",1246700.00,1975,12878000,38.3,6648.00,7984.00,Angola,Republic,"José Eduardo dos Santos",56,AO
+BDI,Burundi,Africa,"Eastern Africa",27834.00,1962,6695000,46.2,903.00,982.00,Burundi/Uburundi,Republic,"Pierre Buyoya",552,BI
+BEN,Benin,Africa,"Western Africa",112622.00,1960,6097000,50.2,2357.00,2141.00,Bénin,Republic,"Mathieu Kérékou",187,BJ
+BFA,"Burkina Faso",Africa,"Western Africa",274000.00,1960,11937000,46.7,2425.00,2201.00,"Burkina Faso",Republic,"Blaise Compaoré",549,BF
+BWA,Botswana,Africa,"Southern Africa",581730.00,1966,1622000,39.3,4834.00,4935.00,Botswana,Republic,"Festus G. Mogae",204,BW
+CAF,"Central African Republic",Africa,"Central Africa",622984.00,1960,3615000,44.0,1054.00,993.00,Centrafrique/Bê-Afrîka,Republic,"Ange-Félix Patassé",1889,CF
+CIV,"Côte d’Ivoire",Africa,"Western Africa",322463.00,1960,14786000,45.2,11345.00,10285.00,"Côte d’Ivoire",Republic,"Laurent Gbagbo",2814,CI
+CMR,Cameroon,Africa,"Central Africa",475442.00,1960,15085000,54.8,9174.00,8596.00,Cameroun/Cameroon,Republic,"Paul Biya",1804,CM
+COD,"Congo, The Democratic Republic of the",Africa,"Central Africa",2344858.00,1960,51654000,48.8,6964.00,2474.00,"République Démocratique du Congo",Republic,"Joseph Kabila",2298,CD
+COG,Congo,Africa,"Central Africa",342000.00,1960,2943000,47.4,2108.00,2287.00,Congo,Republic,"Denis Sassou-Nguesso",2296,CG
+COM,Comoros,Africa,"Eastern Africa",1862.00,1975,578000,60.0,4401.00,4361.00,Komori/Comores,Republic,"Azali Assoumani",2295,KM
+CPV,"Cape Verde",Africa,"Western Africa",4033.00,1975,428000,68.9,435.00,420.00,"Cabo Verde",Republic,"António Mascarenhas Monteiro",1859,CV
+DJI,Djibouti,Africa,"Eastern Africa",23200.00,1977,638000,50.8,382.00,373.00,Djibouti/Jibuti,Republic,"Ismail Omar Guelleh",585,DJ
+DZA,Algeria,Africa,"Northern Africa",2381741.00,1962,31471000,69.7,49982.00,46966.00,Al-Jaza’ir/Algérie,Republic,"Abdelaziz Bouteflika",35,DZ
+EGY,Egypt,Africa,"Northern Africa",1001449.00,1922,68470000,63.3,82710.00,75617.00,Misr,Republic,"Hosni Mubarak",608,EG
+ERI,Eritrea,Africa,"Eastern Africa",117600.00,1993,3850000,55.8,650.00,755.00,Ertra,Republic,"Isayas Afewerki [Isaias Afwerki]",652,ER
+ESH,"Western Sahara",Africa,"Northern Africa",266000.00,NULL,293000,49.8,60.00,NULL,As-Sahrawiya,"Occupied by Marocco","Mohammed Abdel Aziz",2453,EH
+ETH,Ethiopia,Africa,"Eastern Africa",1104300.00,-1000,62565000,45.2,6353.00,6180.00,YeItyop´iya,Republic,"Negasso Gidada",756,ET
+GAB,Gabon,Africa,"Central Africa",267668.00,1960,1226000,50.1,5493.00,5279.00,"Le Gabon",Republic,"Omar Bongo",902,GA
+GHA,Ghana,Africa,"Western Africa",238533.00,1957,20212000,57.4,7137.00,6884.00,Ghana,Republic,"John Kufuor",910,GH
+GIN,Guinea,Africa,"Western Africa",245857.00,1958,7430000,45.6,2352.00,2383.00,Guinée,Republic,"Lansana Conté",926,GN
+GMB,Gambia,Africa,"Western Africa",11295.00,1965,1305000,53.2,320.00,325.00,"The Gambia",Republic,"Yahya Jammeh",904,GM
+GNB,Guinea-Bissau,Africa,"Western Africa",36125.00,1974,1213000,49.0,293.00,272.00,Guiné-Bissau,Republic,"Kumba Ialá",927,GW
+GNQ,"Equatorial Guinea",Africa,"Central Africa",28051.00,1968,453000,53.6,283.00,542.00,"Guinea Ecuatorial",Republic,"Teodoro Obiang Nguema Mbasogo",2972,GQ
+IOT,"British Indian Ocean Territory",Africa,"Eastern Africa",78.00,NULL,0,NULL,0.00,NULL,"British Indian Ocean Territory","Dependent Territory of the UK","Elisabeth II",NULL,IO
+KEN,Kenya,Africa,"Eastern Africa",580367.00,1963,30080000,48.0,9217.00,10241.00,Kenya,Republic,"Daniel arap Moi",1881,KE
+LBR,Liberia,Africa,"Western Africa",111369.00,1847,3154000,51.0,2012.00,NULL,Liberia,Republic,"Charles Taylor",2440,LR
+LBY,"Libyan Arab Jamahiriya",Africa,"Northern Africa",1759540.00,1951,5605000,75.5,44806.00,40562.00,Libiya,"Socialistic State","Muammar al-Qadhafi",2441,LY
+LSO,Lesotho,Africa,"Southern Africa",30355.00,1966,2153000,50.8,1061.00,1161.00,Lesotho,"Constitutional Monarchy","Letsie III",2437,LS
+MAR,Morocco,Africa,"Northern Africa",446550.00,1956,28351000,69.1,36124.00,33514.00,Al-Maghrib,"Constitutional Monarchy","Mohammed VI",2486,MA
+MDG,Madagascar,Africa,"Eastern Africa",587041.00,1960,15942000,55.0,3750.00,3545.00,Madagasikara/Madagascar,"Federal Republic","Didier Ratsiraka",2455,MG
+MLI,Mali,Africa,"Western Africa",1240192.00,1960,11234000,46.7,2642.00,2453.00,Mali,Republic,"Alpha Oumar Konaré",2482,ML
+MOZ,Mozambique,Africa,"Eastern Africa",801590.00,1975,19680000,37.5,2891.00,2711.00,Moçambique,Republic,"Joaquím A. Chissano",2698,MZ
+MRT,Mauritania,Africa,"Western Africa",1025520.00,1960,2670000,50.8,998.00,1081.00,Muritaniya/Mauritanie,Republic,"Maaouiya Ould Sid´Ahmad Taya",2509,MR
+MUS,Mauritius,Africa,"Eastern Africa",2040.00,1968,1158000,71.0,4251.00,4186.00,Mauritius,Republic,"Cassam Uteem",2511,MU
+MWI,Malawi,Africa,"Eastern Africa",118484.00,1964,10925000,37.6,1687.00,2527.00,Malawi,Republic,"Bakili Muluzi",2462,MW
+MYT,Mayotte,Africa,"Eastern Africa",373.00,NULL,149000,59.5,0.00,NULL,Mayotte,"Territorial Collectivity of France","Jacques Chirac",2514,YT
+NAM,Namibia,Africa,"Southern Africa",824292.00,1990,1726000,42.5,3101.00,3384.00,Namibia,Republic,"Sam Nujoma",2726,NA
+NER,Niger,Africa,"Western Africa",1267000.00,1960,10730000,41.3,1706.00,1580.00,Niger,Republic,"Mamadou Tandja",2738,NE
+NGA,Nigeria,Africa,"Western Africa",923768.00,1960,111506000,51.6,65707.00,58623.00,Nigeria,"Federal Republic","Olusegun Obasanjo",2754,NG
+REU,Réunion,Africa,"Eastern Africa",2510.00,NULL,699000,72.7,8287.00,7988.00,Réunion,"Overseas Department of France","Jacques Chirac",3017,RE
+RWA,Rwanda,Africa,"Eastern Africa",26338.00,1962,7733000,39.3,2036.00,1863.00,Rwanda/Urwanda,Republic,"Paul Kagame",3047,RW
+SDN,Sudan,Africa,"Northern Africa",2505813.00,1956,29490000,56.6,10162.00,NULL,As-Sudan,"Islamic Republic","Omar Hassan Ahmad al-Bashir",3225,SD
+SEN,Senegal,Africa,"Western Africa",196722.00,1960,9481000,62.2,4787.00,4542.00,Sénégal/Sounougal,Republic,"Abdoulaye Wade",3198,SN
+SHN,"Saint Helena",Africa,"Western Africa",314.00,NULL,6000,76.8,0.00,NULL,"Saint Helena","Dependent Territory of the UK","Elisabeth II",3063,SH
+SLE,"Sierra Leone",Africa,"Western Africa",71740.00,1961,4854000,45.3,746.00,858.00,"Sierra Leone",Republic,"Ahmed Tejan Kabbah",3207,SL
+SOM,Somalia,Africa,"Eastern Africa",637657.00,1960,10097000,46.2,935.00,NULL,Soomaaliya,Republic,"Abdiqassim Salad Hassan",3214,SO
+STP,"Sao Tome and Principe",Africa,"Central Africa",964.00,1975,147000,65.3,6.00,NULL,"São Tomé e Príncipe",Republic,"Miguel Trovoada",3172,ST
+SWZ,Swaziland,Africa,"Southern Africa",17364.00,1968,1008000,40.4,1206.00,1312.00,kaNgwane,Monarchy,"Mswati III",3244,SZ
+SYC,Seychelles,Africa,"Eastern Africa",455.00,1976,77000,70.4,536.00,539.00,Sesel/Seychelles,Republic,"France-Albert René",3206,SC
+TCD,Chad,Africa,"Central Africa",1284000.00,1960,7651000,50.5,1208.00,1102.00,Tchad/Tshad,Republic,"Idriss Déby",3337,TD
+TGO,Togo,Africa,"Western Africa",56785.00,1960,4629000,54.7,1449.00,1400.00,Togo,Republic,"Gnassingbé Eyadéma",3332,TG
+TUN,Tunisia,Africa,"Northern Africa",163610.00,1956,9586000,73.7,20026.00,18898.00,Tunis/Tunisie,Republic,"Zine al-Abidine Ben Ali",3349,TN
+TZA,Tanzania,Africa,"Eastern Africa",883749.00,1961,33517000,52.3,8005.00,7388.00,Tanzania,Republic,"Benjamin William Mkapa",3306,TZ
+UGA,Uganda,Africa,"Eastern Africa",241038.00,1962,21778000,42.9,6313.00,6887.00,Uganda,Republic,"Yoweri Museveni",3425,UG
+ZAF,"South Africa",Africa,"Southern Africa",1221037.00,1910,40377000,51.1,116729.00,129092.00,"South Africa",Republic,"Thabo Mbeki",716,ZA
+ZMB,Zambia,Africa,"Eastern Africa",752618.00,1964,9169000,37.2,3377.00,3922.00,Zambia,Republic,"Frederick Chiluba",3162,ZM
+ZWE,Zimbabwe,Africa,"Eastern Africa",390757.00,1980,11669000,37.8,5951.00,8670.00,Zimbabwe,Republic,"Robert G. Mugabe",4068,ZW
