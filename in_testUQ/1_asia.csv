@@ -1,0 +1,52 @@
+Code,Name,Continent,Region,SurfaceArea,IndepYear,Population,LifeExpectancy,GNP,GNPOld,LocalName,GovernmentForm,HeadOfState,Capital,Code2
+AFG,Afghanistan,Asia,"Southern and Central Asia",652090.00,1919,22720000,45.9,5976.00,NULL,Afganistan/Afqanestan,"Islamic Emirate","Mohammad Omar",1,AF
+ARE,"United Arab Emirates",Asia,"Middle East",83600.00,1971,2441000,74.1,37966.00,36846.00,"Al-Imarat al-´Arabiya al-Muttahida","Emirate Federation","Zayid bin Sultan al-Nahayan",65,AE
+ARM,Armenia,Asia,"Middle East",29800.00,1991,3520000,66.4,1813.00,1627.00,Hajastan,Republic,"Robert Kotšarjan",126,AM
+AZE,Azerbaijan,Asia,"Middle East",86600.00,1991,7734000,62.9,4127.00,4100.00,Azərbaycan,Republic,"İlham Əliyev",144,AZ
+BGD,Bangladesh,Asia,"Southern and Central Asia",143998.00,1971,129155000,60.2,32852.00,31966.00,Bangladesh,Republic,"Shahabuddin Ahmad",150,BD
+BHR,Bahrain,Asia,"Middle East",694.00,1971,617000,73.0,6366.00,6097.00,Al-Bahrayn,"Monarchy (Emirate)","Hamad ibn Isa al-Khalifa",149,BH
+BRN,Brunei,Asia,"Southeast Asia",5765.00,1984,328000,73.6,11705.00,12460.00,"Brunei Darussalam","Monarchy (Sultanate)","Haji Hassan al-Bolkiah",538,BN
+BTN,Bhutan,Asia,"Southern and Central Asia",47000.00,1910,2124000,52.4,372.00,383.00,Druk-Yul,Monarchy,"Jigme Singye Wangchuk",192,BT
+CHN,China,Asia,"Eastern Asia",9572900.00,-1523,1277558000,71.4,982268.00,917719.00,Zhongquo,People'sRepublic,"Jiang Zemin",1891,CN
+CYP,Cyprus,Asia,"Middle East",9251.00,1960,754700,76.7,9333.00,8246.00,Kýpros/Kibris,Republic,"Glafkos Klerides",2430,CY
+GEO,Georgia,Asia,"Middle East",69700.00,1991,4968000,64.5,6064.00,5924.00,Sakartvelo,Republic,"Eduard Ševardnadze",905,GE
+HKG,"Hong Kong",Asia,"Eastern Asia",1075.00,,6782000,79.5,166448.00,173610.00,"Xianggang/Hong Kong","Special Administrative Region of China","Jiang Zemin",937,HK
+IDN,Indonesia,Asia,"Southeast Asia",1904569.00,1945,212107000,68.0,84982.00,215002.00,Indonesia,Republic,"Abdurrahman Wahid",939,ID
+IND,India,Asia,"Southern and Central Asia",3287263.00,1947,1013662000,62.5,447114.00,430572.00,Bharat/India,"Federal Republic","Kocheril Raman Narayanan",1109,IN
+IRN,Iran,Asia,"Southern and Central Asia",1648195.00,1906,67702000,69.7,195746.00,160151.00,Iran,"Islamic Republic","Ali Mohammad Khatami-Ardakani",1380,IR
+IRQ,Iraq,Asia,"Middle East",438317.00,1932,23115000,66.5,11500.00,NULL,Al-´Iraq,Republic,"Saddam Hussein al-Takriti",1365,IQ
+ISR,Israel,Asia,"Middle East",21056.00,1948,6217000,78.6,97477.00,98577.00,Yisra’el/Isra’il,Republic,"Moshe Katzav",1450,IL
+JOR,Jordan,Asia,"Middle East",88946.00,1946,5083000,77.4,7526.00,7051.00,Al-Urdunn,"Constitutional Monarchy","Abdullah II",1786,JO
+JPN,Japan,Asia,"Eastern Asia",377829.00,-660,126714000,80.7,3787042.00,4192638.00,Nihon/Nippon,"Constitutional Monarchy",Akihito,1532,JP
+KAZ,Kazakstan,Asia,"Southern and Central Asia",2724900.00,1991,16223000,63.2,24375.00,23383.00,Qazaqstan,Republic,"Nursultan Nazarbajev",1864,KZ
+KGZ,Kyrgyzstan,Asia,"Southern and Central Asia",199900.00,1991,4699000,63.4,1626.00,1767.00,Kyrgyzstan,Republic,"Askar Akajev",2253,KG
+KHM,Cambodia,Asia,"Southeast Asia",181035.00,1953,11168000,56.5,5121.00,5670.00,Kâmpuchéa,"Constitutional Monarchy","Norodom Sihanouk",1800,KH
+KOR,"South Korea",Asia,"Eastern Asia",99434.00,1948,46844000,74.4,320749.00,442544.00,"Taehan Min’guk (Namhan)",Republic,"Kim Dae-jung",2331,KR
+KWT,Kuwait,Asia,"Middle East",17818.00,1961,1972000,76.1,27037.00,30373.00,Al-Kuwayt,"Constitutional Monarchy (Emirate)","Jabir al-Ahmad al-Jabir al-Sabah",2429,KW
+LAO,Laos,Asia,"Southeast Asia",236800.00,1953,5433000,53.1,1292.00,1746.00,Lao,Republic,"Khamtay Siphandone",2432,LA
+LBN,Lebanon,Asia,"Middle East",10400.00,1941,3282000,71.3,17121.00,15129.00,Lubnan,Republic,"Émile Lahoud",2438,LB
+LKA,"Sri Lanka",Asia,"Southern and Central Asia",65610.00,1948,18827000,71.8,15706.00,15091.00,"Sri Lanka/Ilankai",Republic,"Chandrika Kumaratunga",3217,LK
+MAC,Macao,Asia,"Eastern Asia",18.00,NULL,473000,81.6,5749.00,5940.00,Macau/Aomen,"Special Administrative Region of China","Jiang Zemin",2454,MO
+MDV,Maldives,Asia,"Southern and Central Asia",298.00,1965,286000,62.2,199.00,NULL,"Dhivehi Raajje/Maldives",Republic,"Maumoon Abdul Gayoom",2463,MV
+MMR,Myanmar,Asia,"Southeast Asia",676578.00,1948,45611000,54.9,180375.00,171028.00,"Myanma Pye",Republic,"kenraali Than Shwe",2710,MM
+MNG,Mongolia,Asia,"Eastern Asia",1566500.00,1921,2662000,67.3,1043.00,933.00,"Mongol Uls",Republic,"Natsagiin Bagabandi",2696,MN
+MYS,Malaysia,Asia,"Southeast Asia",329758.00,1957,22244000,70.8,69213.00,97884.00,Malaysia,"Constitutional Monarchy, Federation","Salahuddin Abdul Aziz Shah Alhaj",2464,MY
+NPL,Nepal,Asia,"Southern and Central Asia",147181.00,1769,23930000,57.8,4768.00,4837.00,Nepal,"Constitutional Monarchy","Gyanendra Bir Bikram",2729,NP
+OMN,Oman,Asia,"Middle East",309500.00,1951,2542000,71.8,16904.00,16153.00,´Uman,"Monarchy (Sultanate)","Qabus ibn Sa´id",2821,OM
+PAK,Pakistan,Asia,"Southern and Central Asia",796095.00,1947,156483000,61.1,61289.00,58549.00,Pakistan,Republic,"Mohammad Rafiq Tarar",2831,PK
+PHL,Philippines,Asia,"Southeast Asia",300000.00,1946,75967000,67.5,65107.00,82239.00,Pilipinas,Republic,"Gloria Macapagal-Arroyo",766,PH
+PRK,"North Korea",Asia,"Eastern Asia",120538.00,1948,24039000,70.7,5332.00,NULL,"Choson Minjujuui In´min Konghwaguk (Bukhan)","Socialistic Republic","Kim Jong-il",2318,KP
+PSE,Palestine,Asia,"Middle East",6257.00,NULL,3101000,71.4,4173.00,NULL,Filastin,"Autonomous Area","Yasser (Yasir) Arafat",4074,PS
+QAT,Qatar,Asia,"Middle East",11000.00,1971,599000,72.4,9472.00,8920.00,Qatar,Monarchy,"Hamad ibn Khalifa al-Thani",2973,QA
+SAU,"Saudi Arabia",Asia,"Middle East",2149690.00,1932,21607000,67.8,137635.00,146171.00,"Al-´Arabiya as-Sa´udiya",Monarchy,"Fahd ibn Abdul-Aziz al-Sa´ud",3173,SA
+SGP,Singapore,Asia,"Southeast Asia",618.00,1965,3567000,80.1,86503.00,96318.00,Singapore/Singapura/Xinjiapo/Singapur,Republic,"Sellapan Rama Nathan",3208,SG
+SYR,Syria,Asia,"Middle East",185180.00,1941,16125000,68.5,65984.00,64926.00,Suriya,Republic,"Bashar al-Assad",3250,SY
+THA,Thailand,Asia,"Southeast Asia",513115.00,1350,61399000,68.6,116416.00,153907.00,"Prathet Thai","Constitutional Monarchy","Bhumibol Adulyadej",3320,TH
+TJK,Tajikistan,Asia,"Southern and Central Asia",143100.00,1991,6188000,64.1,1990.00,1056.00,Toçikiston,Republic,"Emomali Rahmonov",3261,TJ
+TKM,Turkmenistan,Asia,"Southern and Central Asia",488100.00,1991,4459000,60.9,4397.00,2000.00,Türkmenostan,Republic,"Saparmurad Nijazov",3419,TM
+TMP,"East Timor",Asia,"Southeast Asia",14874.00,NULL,885000,46.0,0.00,NULL,"Timor Timur","Administrated by the UN","José Alexandre Gusmão",1522,TP
+TUR,Turkey,Asia,"Middle East",774815.00,1923,66591000,71.0,210721.00,189122.00,Türkiye,Republic,"Ahmet Necdet Sezer",3358,TR
+TWN,Taiwan,Asia,"Eastern Asia",36188.00,1945,22256000,76.4,256254.00,263451.00,T’ai-wan,Republic,"Chen Shui-bian",3263,TW
+UZB,Uzbekistan,Asia,"Southern and Central Asia",447400.00,1991,24318000,63.7,14194.00,21300.00,Uzbekiston,Republic,"Islam Karimov",3503,UZ
+VNM,Vietnam,Asia,"Southeast Asia",331689.00,1945,79832000,69.3,21929.00,22834.00,"Viêt Nam","Socialistic Republic","Trân Duc Luong",3770,VN
+YEM,Yemen,Asia,"Middle East",527968.00,1918,18112000,59.8,6041.00,5729.00,Al-Yaman,Republic,"Ali Abdallah Salih",1780,YE
