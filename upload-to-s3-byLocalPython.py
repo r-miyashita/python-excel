@@ -23,7 +23,10 @@ try:
         file_path,
         bucket_name,
         object_name,
-        ExtraArgs={'ACL': 'public-read'}
+        ExtraArgs={
+            'ACL': 'public-read',
+            'ContentType': 'image/png'
+        }
     )
     print(f'ファイル {file_path} を S3バケット {bucket_name} にアップロードしました。')
 except FileNotFoundError:
