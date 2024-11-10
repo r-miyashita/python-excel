@@ -1,3 +1,12 @@
+'''
+前提条件：
+    ▫️バケットのアクセス許可が必要（
+        以下を解除
+            ・「新しいアクセスコントロールリスト (ACL) を介して付与されたバケットとオブジェクトへのパブリックアクセスをブロックする」
+    ）
+    ▫️ロール or IAMユーザ に「CloudShell」のアクセス権限が必要
+'''
+
 import boto3
 from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 
